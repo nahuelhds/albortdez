@@ -23,6 +23,11 @@ def limit_handled(cursor):
             yield cursor.next()
         except tweepy.RateLimitError:
             time.sleep(15 * 60)
+        except IOError:
+            time.sleep(60*5)
+            continue
+        except StopIteration:
+            break
 
 
 for status in limit_handled(tweepy.Cursor(api.user_timeline, screen_name=twitter_account, tweet_mode="extended").items()):
@@ -30,3 +35,4 @@ for status in limit_handled(tweepy.Cursor(api.user_timeline, screen_name=twitter
     saveFile.write("%s\n"%status.full_text)
 
 saveFile.close()
+print("Extraction finished!")
