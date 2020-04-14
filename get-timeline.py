@@ -19,7 +19,6 @@ def limit_handled(cursor):
 
 config = configparser.ConfigParser()
 config.read('.twitter')
-
 twitter_account = config['source']['account_screen_name']
 
 # OAuth process, using the keys and tokens
@@ -35,4 +34,8 @@ for status in limit_handled(tweepy.Cursor(api.user_timeline, screen_name=twitter
     saveFile.write("%s\n"%status.full_text)
 
 saveFile.close()
+
+print("")
+print("====================")
 print("Extraction finished!")
+print("====================")
