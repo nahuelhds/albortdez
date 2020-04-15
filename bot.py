@@ -1,6 +1,6 @@
 import markovify
 import json
-from os import getenv
+from os import environ
 from expiringdict import ExpiringDict
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
@@ -8,13 +8,13 @@ from tweepy import Stream
 from tweepy import API
 
 # store Twitter specific credentials
-CONSUMER_KEY = getenv['CONSUMER_KEY']
-CONSUMER_SECRET = getenv['CONSUMER_SECRET']
-ACCESS_KEY = getenv['ACCESS_KEY']
-ACCESS_SECRET = getenv['ACCESS_SECRET']
-TRACK = getenv['TRACK']
-ACCOUNT_SCREEN_NAME = getenv['ACCOUNT_SCREEN_NAME'].lower()
-ACCOUNT_USER_ID = getenv['ACCOUNT_USER_ID']
+ACCESS_KEY = environ['ACCESS_KEY']
+ACCESS_SECRET = environ['ACCESS_SECRET']
+ACCOUNT_SCREEN_NAME = environ['ACCOUNT_SCREEN_NAME']
+ACCOUNT_USER_ID = environ['ACCOUNT_USER_ID']
+CONSUMER_KEY = environ['CONSUMER_KEY']
+CONSUMER_SECRET = environ['CONSUMER_SECRET']
+TRACK = environ['TRACK']
 
 tweets_filename = "./tweets/%s-replies.txt" % ACCOUNT_SCREEN_NAME
 
