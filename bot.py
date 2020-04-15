@@ -1,26 +1,25 @@
 import markovify
-import configparser
 import json
+from os import getenv
 from expiringdict import ExpiringDict
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
 
-# read configuration file (.twitter)
-config = configparser.ConfigParser()
-config.read('.twitter')
-
-
 # store Twitter specific credentials
-account_screen_name = config['app']['account_screen_name'].lower()
-account_user_id = config['app']['account_user_id']
-track = config['app']['track']
+CONSUMER_KEY = getenv['CONSUMER_KEY']
+CONSUMER_SECRET = getenv['CONSUMER_SECRET']
+ACCESS_KEY = getenv['ACCESS_KEY']
+ACCESS_SECRET = getenv['ACCESS_SECRET']
+TRACK = getenv['TRACK']
+ACCOUNT_SCREEN_NAME = getenv['ACCOUNT_SCREEN_NAME'].lower()
+ACCOUNT_USER_ID = getenv['ACCOUNT_USER_ID']
 
-tweets_filename = "./tweets/%s-replies.txt" % account_screen_name
+tweets_filename = "./tweets/%s-replies.txt" % ACCOUNT_SCREEN_NAME
 
-auth = OAuthHandler(config['consumer']['key'], config['consumer']['secret'])
-auth.set_access_token(config['access']['token'], config['access']['token_secret'])
+auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 twitterApi = API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 
@@ -45,10 +44,10 @@ class ReplyToTweet(StreamListener):
 
         tweet = json.loads(str(data).strip())
         retweeted = tweet.get('retweeted')
-        from_self = tweet.get('user', {}).get('id_str','') == account_user_id
+        from_self = tweet.get('user', {}).get('id_str','') == ACCOUNT_USER_ID
 
         # if retweeted is not None and not retweeted and not from_self:
-        if retweeted is not None and not retweeted:
+        if retweeted is not None and not from_self:
 
             tweetId = tweet.get('id_str')
             screenName = tweet.get('user', {}).get('screen_name')
@@ -82,5 +81,5 @@ class ReplyToTweet(StreamListener):
 if __name__ == '__main__':
     streamListener = ReplyToTweet()
     twitterStream = Stream(auth, streamListener)
-    twitterStream.filter(track=[track])
+    twitterStream.filter(track=[TRACK])
 
