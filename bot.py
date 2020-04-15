@@ -1,11 +1,14 @@
 import markovify
 import json
+from dotenv import load_dotenv
 from os import environ
 from expiringdict import ExpiringDict
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
+
+load_dotenv()
 
 # store Twitter specific credentials
 ACCESS_KEY = environ['ACCESS_KEY']
