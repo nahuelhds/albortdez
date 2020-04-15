@@ -29,7 +29,7 @@ twitterApi = API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 class ReplyToTweet(StreamListener):
 
     def __init__(self):
-        self.__max_per_user = 2 # max replies per user within an hour
+        self.__max_per_user = 5 # max replies per user within an hour
         self.__rate_limits_per_user = ExpiringDict(max_len=1000, max_age_seconds=(1 * 60))
         self.initialize_model()
 
@@ -64,7 +64,7 @@ class ReplyToTweet(StreamListener):
 
             # check rate limit, and reply accordingly
             if (existing_rate == self.__max_per_user):
-                replyText = '@' + screenName + ' lo siento, pero solo 2 respuestas por hora 🤖👮'
+                replyText = '@' + screenName + ' no te voy a responder. Esperá sentado una hora.'
                 twitterApi.update_status(status=replyText, in_reply_to_status_id=tweetId)
                 print("replied to this user, saying he/she should wait for an hour.")
                 return
