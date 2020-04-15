@@ -1,5 +1,5 @@
 .idea
-tweets
 venv
 .twitter
 model*
+**/*.csv
