@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import sys
 import markovify
 import configparser
 import json
-import sys
 from expiringdict import ExpiringDict
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
@@ -15,12 +10,14 @@ from tweepy import API
 # read configuration file (.twitter)
 config = configparser.ConfigParser()
 config.read('.twitter')
-reload(sys)
-sys.setdefaultencoding("utf-8")
+
 
 # store Twitter specific credentials
 account_screen_name = config['app']['account_screen_name'].lower()
 account_user_id = config['app']['account_user_id']
+track = config['app']['track']
+
+tweets_filename = "./tweets/%s-replies.txt" % account_screen_name
 
 auth = OAuthHandler(config['consumer']['key'], config['consumer']['secret'])
 auth.set_access_token(config['access']['token'], config['access']['token_secret'])
@@ -35,7 +32,7 @@ class ReplyToTweet(StreamListener):
         self.initialize_model()
 
     def initialize_model(self):
-        with open("./tweets.txt") as f:
+        with open(tweets_filename) as f:
             text = f.read()
             self.__text_model = markovify.Text(text)
 
@@ -74,6 +71,7 @@ class ReplyToTweet(StreamListener):
                 return
 
             replyText = '@' + screenName +" "+ self.response("")
+            print("%s | %s" % (replyText, "https://twitter.com/%s/status/%s" % (screenName, tweetId)))
             twitterApi.update_status(status=replyText, in_reply_to_status_id=tweetId)
             return
 
@@ -84,5 +82,5 @@ class ReplyToTweet(StreamListener):
 if __name__ == '__main__':
     streamListener = ReplyToTweet()
     twitterStream = Stream(auth, streamListener)
-    twitterStream.filter(track=[account_screen_name])
+    twitterStream.filter(track=[track])
 
